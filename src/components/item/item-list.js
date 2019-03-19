@@ -9,15 +9,32 @@ class ItemList extends React.Component {
 
     renderOrder() {
         return this.props.listItems
-            .map((item) => <li key={item.name} className="list-group-item" style={{ color: '#000000' }}>{item.name}</li>)
+            .map((item, index) => <tr key={index}>
+                <th scope="row">{index + 1}</th>
+                <td>{item.name}</td>
+                <td className=" text-center"><input onChange={(event) => this.props.onUpdateQuantity(item.itemId, event.target.value)} type="number" min="1" max="500" value={item.quantity} /></td>
+                <td className=" text-center">$ {item.price}</td>
+                <td className=" text-center"><button onClick={() => this.props.onDeleteItem(item.itemId)} className="btn btn-danger">Delete</button></td>
+            </tr>)
     }
 
 
     render() {
         return (
-            <ul className="list-group" >
-                {this.renderOrder()}
-            </ul>
+            <table className="table table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Item</th>
+                        <th scope="col" className=" text-center">Quantity</th>
+                        <th scope="col" className=" text-center">Unit Price</th>
+                        <th scope="col" className=" text-center"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {this.renderOrder()}
+                </tbody>
+            </table>
         );
     }
 }

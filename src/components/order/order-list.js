@@ -7,20 +7,67 @@ import Order from "./order"
 class OrderList extends React.Component {
     constructor(props) {
         super(props);
+
         this.state = {
-            isLoading: false,
-            isOrderShowing: true
+            // isLoading: false,
+            // isOrderShowing: true,
+            orderTots: {},
+            orderVisibility: {},
+
+            orderList: [{
+                id: "order-id-1",
+                items: [
+                    {
+                        itemId: "id1",
+                        name: "Soap",
+                        price: "1",
+                        quantity: 3
+                    },
+                    {
+                        itemId: "id2",
+                        name: "Cream",
+                        price: "15",
+                        quantity: 1
+                    }]
+            },
+            {
+                id: "order-id-2",
+                items: [
+                    {
+                        itemId: "id1",
+                        name: "Soap",
+                        price: "1",
+                        quantity: 3
+                    },
+                    {
+                        itemId: "id2",
+                        name: "Cream",
+                        price: "15",
+                        quantity: 1
+                    }]
+            }
+            ]
         };
 
+        this.renderOrderList = this.renderOrderList.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.showOrder = this.showOrder.bind(this);
+        this.handleOrderTotal = this.handleOrderTotal.bind(this);
     }
 
     handleChange(event) {
         const name = event.target.name;
         const value = event.target.value;
         this.setState({ [name]: value });
+    }
+
+    handleOrderTotal(orderId, total) {
+        let order = this.state.orderTots;
+        order[orderId] = total;
+        this.setState({
+            orderTots: order
+        })
     }
 
     handleSubmit(event) {
@@ -45,10 +92,36 @@ class OrderList extends React.Component {
         //   })
     }
 
-    showOrder() {
-        this.setState({
-            isOrderShowing: !this.state.isOrderShowing
+    showOrder(orderId) {
+        let order = {};
+        this.state.orderList.forEach((item) => {
+            if (orderId == item.id)
+                order[item.id] = true;
+            else
+                order[item.id] = false;
         })
+
+        this.setState({
+            orderVisibility: order
+        })
+    }
+
+
+    renderOrderList() {
+        return (
+            this.state.orderList.map((order, index) =>
+                <div key={index}>
+                    <ListGroupItem active={this.state.orderVisibility[order.id]}>
+                        <ListGroupItemHeading>{order.id}<button onClick={(event) => this.showOrder(order.id)} className="btn btn-outline-success float-right">Show Order</button></ListGroupItemHeading>
+                        <ListGroupItemText>
+                            Total: $ {this.state.orderTots[order.id]}
+                        </ListGroupItemText>
+                        {this.state.orderVisibility[order.id] ? (<Order onOrderUpdate={(total) => this.handleOrderTotal(order.id, total)} />) : (<div></div>)}
+                    </ListGroupItem>
+                    <br />
+                </div>
+            )
+        )
     }
 
     render() {
@@ -60,13 +133,7 @@ class OrderList extends React.Component {
                 <br />
                 <div className="row col-md-6 offset-md-3">
                     <ListGroup className="btn-block">
-                        <ListGroupItem active>
-                            <ListGroupItemHeading> Order 1 <button onClick={this.showOrder} className="btn btn-outline-success float-right">Show Order</button></ListGroupItemHeading>
-                            <ListGroupItemText>
-                                Test Order Details
-                            </ListGroupItemText>
-                            <Order />
-                        </ListGroupItem>
+                        {this.renderOrderList()}
                     </ListGroup>
                 </div>
             </div>
