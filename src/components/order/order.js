@@ -2,8 +2,10 @@ import React from "react";
 import { Spinner, ListGroup, ListGroupItem, ListGroupItemHeading, ListGroupItemText, Collapse, Card, CardBody } from 'reactstrap';
 import { host } from "../../config/config"
 import axios from "axios"
-import SelectItem from "../item/select-item"
+import SelectItem from "../item/item-select"
 import ItemList from "../item/item-list";
+import { orderService } from "../../services/service"
+
 
 
 class Order extends React.Component {
@@ -44,7 +46,7 @@ class Order extends React.Component {
                     price: "12",
                 }
             ],
-            isOrderShowing: true
+            isOrderShowing: false,
         };
 
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -66,6 +68,7 @@ class Order extends React.Component {
             order: order,
             onList: onList
         });
+        this.props.onOrderUpdate(this.calculateTotatl(order));
     }
 
     handleSubmit(event) {
@@ -132,6 +135,22 @@ class Order extends React.Component {
             order: order,
             onList: onList
         })
+        this.props.onOrderUpdate(this.calculateTotatl(order));
+    }
+
+    componentDidMount() {
+        this.props.onOrderUpdate(this.calculateTotatl(this.state.order));
+        Promise.all([
+            orderService.getAllItems(),
+            orderService.getItemsByOrderId(this.props.orderId)
+        ])
+            .then(result => {
+                this.setState({
+                    onList: result[0].data,
+                    order: result[1].data.items,
+                    isOrderShowing: true,
+                })
+            })
     }
 
     render() {

@@ -36,11 +36,15 @@ class Login extends React.Component {
         this.setState({
           isLoading: false
         })
+        console.log(">>>>>")
+        this.props.onLoginClick(200);
       })
       .catch(e => {
+        console.log(e)
         this.setState({
           isLoading: false
         })
+        this.props.onLoginClick(401);
       })
   }
 

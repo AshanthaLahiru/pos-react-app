@@ -1,8 +1,8 @@
 import React from "react";
 import { Spinner, ListGroup, ListGroupItem, ListGroupItemHeading, ListGroupItemText, Collapse, Card, CardBody } from 'reactstrap';
-import { host } from "../../config/config"
-import axios from "axios"
 import Order from "./order"
+import OrderCreate from "./order-create"
+import { orderService } from "../../services/service"
 
 class OrderList extends React.Component {
     constructor(props) {
@@ -13,40 +13,9 @@ class OrderList extends React.Component {
             // isOrderShowing: true,
             orderTots: {},
             orderVisibility: {},
+            creatOrderModalShow: false,
 
-            orderList: [{
-                id: "order-id-1",
-                items: [
-                    {
-                        itemId: "id1",
-                        name: "Soap",
-                        price: "1",
-                        quantity: 3
-                    },
-                    {
-                        itemId: "id2",
-                        name: "Cream",
-                        price: "15",
-                        quantity: 1
-                    }]
-            },
-            {
-                id: "order-id-2",
-                items: [
-                    {
-                        itemId: "id1",
-                        name: "Soap",
-                        price: "1",
-                        quantity: 3
-                    },
-                    {
-                        itemId: "id2",
-                        name: "Cream",
-                        price: "15",
-                        quantity: 1
-                    }]
-            }
-            ]
+            orderList: []
         };
 
         this.renderOrderList = this.renderOrderList.bind(this);
@@ -54,12 +23,18 @@ class OrderList extends React.Component {
         this.handleChange = this.handleChange.bind(this);
         this.showOrder = this.showOrder.bind(this);
         this.handleOrderTotal = this.handleOrderTotal.bind(this);
+        this.handleToggleShowOrder = this.handleToggleShowOrder.bind(this);
+        this.handleCreateOrder = this.handleCreateOrder.bind(this);
     }
 
     handleChange(event) {
         const name = event.target.name;
         const value = event.target.value;
         this.setState({ [name]: value });
+    }
+
+    componentDidMount() {
+        this.updateOrderList();
     }
 
     handleOrderTotal(orderId, total) {
@@ -106,18 +81,54 @@ class OrderList extends React.Component {
         })
     }
 
+    handleToggleShowOrder() {
+        this.setState({
+            creatOrderModalShow: !this.state.creatOrderModalShow
+        })
+    }
+
+    handleCreateOrder(orderName) {
+        console.log(orderName)
+        this.setState({
+            creatOrderModalShow: !this.state.creatOrderModalShow
+        })
+
+        let order = {
+            id: orderName,
+            email: 'ashantha.lahiru@gmail.com',
+            items: []
+        }
+
+        orderService.createOrder(order)
+            .then((result) => {
+                console.log(result)
+                this.updateOrderList()
+            })
+    }
+
+    updateOrderList() {
+        let userId = 'ashantha.lahiru@gmail.com'
+        orderService.getAllOrdersByUser(userId)
+            .then((response) => {
+                this.setState({
+                    orderList: response.data
+                })
+
+                console.log(response)
+            })
+    }
 
     renderOrderList() {
         return (
             this.state.orderList.map((order, index) =>
                 <div key={index}>
                     <ListGroupItem active={this.state.orderVisibility[order.id]}>
-                        <ListGroupItemHeading>{order.id}<button onClick={(event) => this.showOrder(order.id)} className="btn btn-outline-success float-right">Show Order</button></ListGroupItemHeading>
+                        <ListGroupItemHeading>{order.id}<button onClick={(event) => this.showOrder(order.id)} className="btn btn-outline-secondary float-right">Show Order</button></ListGroupItemHeading>
                         <ListGroupItemText>
                             Total: $ {this.state.orderTots[order.id]}
                         </ListGroupItemText>
-                        {this.state.orderVisibility[order.id] ? (<Order onOrderUpdate={(total) => this.handleOrderTotal(order.id, total)} />) : (<div></div>)}
                     </ListGroupItem>
+                    {this.state.orderVisibility[order.id] ? (<Order orderId={order.id} onOrderUpdate={(total) => this.handleOrderTotal(order.id, total)} />) : (<div></div>)}
                     <br />
                 </div>
             )
@@ -127,9 +138,12 @@ class OrderList extends React.Component {
     render() {
         return (
             <div className="container-fluid">
-                <nav className="navbar navbar-light" style={{ backgroundColor: '#1E90FF', borderRadius: '5px' }}>
-                    <span className="navbar-brand mb-0 h1">POS System</span>
+                <br />
+                <nav className="navbar navbar-dark bg-dark" style={{ backgroundColor: '#3766FF', borderRadius: '5px' }}>
+                    <span className="navbar-brand p-3 mb-2 h1">POS System</span>
+                    <button onClick={() => this.handleToggleShowOrder()} className="btn btn-outline-light float-right">Create New Order</button>
                 </nav>
+                <OrderCreate visibility={this.state.creatOrderModalShow} onClickCreateShow={() => this.handleToggleShowOrder()} orderName={"Order-" + Date.now()} onCreateOrder={(orderName) => this.handleCreateOrder(orderName)} />
                 <br />
                 <div className="row col-md-6 offset-md-3">
                     <ListGroup className="btn-block">
