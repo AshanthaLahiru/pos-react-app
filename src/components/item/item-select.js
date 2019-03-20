@@ -26,7 +26,7 @@ class SelectItem extends React.Component {
                     </select>
                 </div>
                 <div className="col-md-6">
-                    <button onClick={() => this.props.onAdd(this.selectedValue)} className="btn btn-success btn-block">Add</button>
+                    <button onClick={() => this.props.onAdd(this.selectedValue)} className="btn btn-outline-success btn-block">Add</button>
                 </div>
             </div>
         );

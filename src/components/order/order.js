@@ -4,7 +4,7 @@ import { host } from "../../config/config"
 import axios from "axios"
 import SelectItem from "../item/item-select"
 import ItemList from "../item/item-list";
-import { orderService } from "../../services/service"
+import { service } from "../../services/service"
 
 
 
@@ -13,47 +13,16 @@ class Order extends React.Component {
         super(props);
 
         this.state = {
-            order: [
-                {
-                    itemId: "id1",
-                    name: "Soap",
-                    price: "1",
-                    quantity: 3
-                },
-                {
-                    itemId: "id2",
-                    name: "Cream",
-                    price: "15",
-                    quantity: 1
-                },
-                {
-                    itemId: "id3",
-                    name: "Soda",
-                    price: "10",
-                    quantity: 2
-                }
-            ]
-            ,
-            onList: [
-                {
-                    itemId: "id4",
-                    name: "CocaCola",
-                    price: "13",
-                },
-                {
-                    itemId: "id5",
-                    name: "Peps",
-                    price: "12",
-                }
-            ],
+            order: [],
+            onList: [],
             isOrderShowing: false,
         };
 
-        this.handleSubmit = this.handleSubmit.bind(this);
         this.handleChange = this.handleAdd.bind(this);
         this.showOrder = this.showOrder.bind(this);
         this.handleUpdateQuantityItem = this.handleUpdateQuantityItem.bind(this);
         this.handleDeleteItem = this.handleDeleteItem.bind(this);
+        this.confirmOrder = this.confirmOrder.bind(this);
     }
 
     handleAdd(itemIndex) {
@@ -69,28 +38,6 @@ class Order extends React.Component {
             onList: onList
         });
         this.props.onOrderUpdate(this.calculateTotatl(order));
-    }
-
-    handleSubmit(event) {
-        this.setState({
-            isLoading: true
-        })
-
-        // axios.post(host + "user/login", {
-        //   email: this.state.user_name,
-        //   password: this.state.user_password
-        // })
-        //   .then(response => {
-        //     localStorage.setItem('token', response.data['auth-token']);
-        //     this.setState({
-        //       isLoading: false
-        //     })
-        //   })
-        //   .catch(e => {
-        //     this.setState({
-        //       isLoading: false
-        //     })
-        //   })
     }
 
     showOrder() {
@@ -139,18 +86,57 @@ class Order extends React.Component {
     }
 
     componentDidMount() {
-        this.props.onOrderUpdate(this.calculateTotatl(this.state.order));
+        this.props.onOrderUpdate(null);
         Promise.all([
-            orderService.getAllItems(),
-            orderService.getItemsByOrderId(this.props.orderId)
+            service.getAllItems(),
+            service.getItemsByOrderId(this.props.orderId)
         ])
             .then(result => {
-                this.setState({
-                    onList: result[0].data,
-                    order: result[1].data.items,
-                    isOrderShowing: true,
-                })
+                if (result) {
+                    result[1].data.items.forEach((item) => {
+                        let index = result[0].data.findIndex((listItem) => listItem.id == item.id);
+
+                        if (index) {
+                            result[0].data.splice(index, 1);
+                        }
+                    })
+                    this.setState({
+                        orderDoc: result[1].data,
+                        onList: result[0].data,
+                        order: result[1].data.items,
+                        isOrderShowing: true,
+                    })
+                    this.props.onOrderUpdate(this.calculateTotatl(this.state.order));
+                }
             })
+    }
+
+    confirmOrder() {
+        let orderDoc = Object.assign({}, this.state.orderDoc)
+        orderDoc.items = this.state.order.slice();
+
+        orderDoc.items.find((item) => {
+            delete item.name;
+            delete item.price;
+            delete item.description;
+            item.email = localStorage.getItem("email");
+        })
+
+        service.confirmOrder(this.props.orderId, orderDoc)
+            .then(result => {
+                console.log(result)
+            })
+    }
+
+    renderItemList() {
+        return (
+            <div>
+                <ItemList listItems={this.state.order} onUpdateQuantity={(id, value) => this.handleUpdateQuantityItem(id, value)} onDeleteItem={(item) => this.handleDeleteItem(item)} />
+                <div className="text-center">
+                    <button onClick={this.confirmOrder} className="btn btn-outline-danger">Confirm Order</button>
+                </div>
+            </div>
+        );
     }
 
     render() {
@@ -160,7 +146,7 @@ class Order extends React.Component {
                     <CardBody>
                         <SelectItem listItems={this.state.onList} onAdd={(item) => this.handleAdd(item)} />
                         <br />
-                        <ItemList listItems={this.state.order} onUpdateQuantity={(id, value) => this.handleUpdateQuantityItem(id, value)} onDeleteItem={(item) => this.handleDeleteItem(item)} />
+                        {this.state.order.length != 0 ? this.renderItemList() : ("")}
                     </CardBody>
                 </Card>
             </Collapse>

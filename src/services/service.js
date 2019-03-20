@@ -1,7 +1,7 @@
 import { host } from "../config/config"
 import axios from "axios"
 
-class OrderService {
+class Service {
     constructor() {
         this.header = {
             headers: {
@@ -37,6 +37,30 @@ class OrderService {
                 return response;
             })
     }
+
+    confirmOrder(orderId, order) {
+        return axios.put(host + `order/${orderId}/`, order, this.header)
+            .then(response => {
+                return response;
+            })
+    }
+
+    authenticateUser(email, password) {
+        return axios.post(host + "user/login", {
+            email,
+            password
+        })
+            .then(response => {
+                return response;
+            })
+    }
+
+    registerUser(user) {
+        return axios.post(host + "user/", user)
+            .then(response => {
+                return response;
+            })
+    }
 }
 
-export const orderService = new OrderService();
+export const service = new Service();
