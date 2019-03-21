@@ -16,9 +16,9 @@ class Order extends React.Component {
             order: [],
             onList: [],
             isOrderShowing: false,
+            isConfirmLoading: false
         };
 
-        this.handleChange = this.handleAdd.bind(this);
         this.showOrder = this.showOrder.bind(this);
         this.handleUpdateQuantityItem = this.handleUpdateQuantityItem.bind(this);
         this.handleDeleteItem = this.handleDeleteItem.bind(this);
@@ -48,7 +48,7 @@ class Order extends React.Component {
 
     handleUpdateQuantityItem(id, value) {
         const order = this.state.order.slice()
-        order.find((item) => item.itemId == id).quantity = value;
+        order.find((item) => item.id == id).quantity = value;
 
         this.setState({
             order: order
@@ -111,7 +111,10 @@ class Order extends React.Component {
             })
     }
 
-    confirmOrder() {
+    componentWillUnmount() {
+        this.setState({
+            isOrderShowing: false
+        })
         let orderDoc = Object.assign({}, this.state.orderDoc)
         orderDoc.items = this.state.order.slice();
 
@@ -119,12 +122,38 @@ class Order extends React.Component {
             delete item.name;
             delete item.price;
             delete item.description;
-            item.email = localStorage.getItem("email");
         })
 
         service.confirmOrder(this.props.orderId, orderDoc)
+            .catch((e) => {
+                console.log("Auto Saving Failed");
+            })
+    }
+
+    confirmOrder() {
+        this.setState({
+            isConfirmLoading: true
+        })
+
+        let orderDoc = JSON.parse(JSON.stringify(this.state.orderDoc));
+        orderDoc.items = JSON.parse(JSON.stringify(this.state.order));
+
+        orderDoc.items.find((item) => {
+            delete item.name;
+            delete item.price;
+            delete item.description;
+        })
+
+        orderDoc.status = "served";
+
+        service.confirmOrder(this.props.orderId, orderDoc)
             .then(result => {
-                console.log(result)
+                this.props.updateOrderList()
+                    .then(() => {
+                        this.setState({
+                            isConfirmLoading: false
+                        })
+                    });
             })
     }
 
@@ -133,7 +162,7 @@ class Order extends React.Component {
             <div>
                 <ItemList listItems={this.state.order} onUpdateQuantity={(id, value) => this.handleUpdateQuantityItem(id, value)} onDeleteItem={(item) => this.handleDeleteItem(item)} />
                 <div className="text-center">
-                    <button onClick={this.confirmOrder} className="btn btn-outline-danger">Confirm Order</button>
+                    {this.state.isConfirmLoading ? (<Spinner type="grow" color="danger" />) : (<button onClick={this.confirmOrder} className="btn btn-outline-danger">Confirm Order</button>)}
                 </div>
             </div>
         );
@@ -142,7 +171,7 @@ class Order extends React.Component {
     render() {
         return (
             <Collapse isOpen={this.state.isOrderShowing}>
-                <Card>
+                <Card className={this.props.orderStatus == "served" ? "disable-element" : ""}>
                     <CardBody>
                         <SelectItem listItems={this.state.onList} onAdd={(item) => this.handleAdd(item)} />
                         <br />
