@@ -70,7 +70,7 @@ class Order extends React.Component {
         const order = this.state.order.slice();
         const onList = this.state.onList.slice();
 
-        let indexOfItemId = order.findIndex((item) => item.itemId == itemId);
+        let indexOfItemId = order.findIndex((item) => item.id == itemId);
         const item = Object.assign({}, order[indexOfItemId]);
 
         delete item.quantity;
