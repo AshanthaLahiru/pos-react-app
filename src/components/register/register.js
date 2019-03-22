@@ -74,7 +74,7 @@ class Register extends React.Component {
                                     {this.state.isLoading ? (<Spinner type="grow" color="success" />) : (<button onClick={this.handleSubmit} className="btn btn-success btn-block" name="Login">Sign Up</button>)}
                                 </div>
                                 <br />
-                                <a style={{ cursor: 'pointer' }} onClick={() => this.props.onClickLogin()}>Back to Login!</a>
+                                <a style={{ cursor: 'pointer' }} onClick={() => this.props.onClickLogin()}>Back to Login</a>
                             </div>
                         </div>
                     </Col>

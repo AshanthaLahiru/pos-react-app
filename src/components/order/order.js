@@ -5,7 +5,7 @@ import axios from "axios"
 import SelectItem from "../item/item-select"
 import ItemList from "../item/item-list";
 import { service } from "../../services/service"
-
+import { NotificationManager } from 'react-notifications';
 
 
 class Order extends React.Component {
@@ -107,6 +107,7 @@ class Order extends React.Component {
                         isOrderShowing: true,
                     })
                     this.props.onOrderUpdate(this.calculateTotatl(this.state.order));
+                    this.props.onLoadingStatusToggle();
                 }
             })
     }
@@ -115,6 +116,7 @@ class Order extends React.Component {
         this.setState({
             isOrderShowing: false
         })
+
         let orderDoc = Object.assign({}, this.state.orderDoc)
         orderDoc.items = this.state.order.slice();
 
@@ -124,7 +126,7 @@ class Order extends React.Component {
             delete item.description;
         })
 
-        service.confirmOrder(this.props.orderId, orderDoc)
+        service.confirmOrder(orderDoc.id, orderDoc)
             .catch((e) => {
                 console.log("Auto Saving Failed");
             })
@@ -146,10 +148,11 @@ class Order extends React.Component {
 
         orderDoc.status = "served";
 
-        service.confirmOrder(this.props.orderId, orderDoc)
+        service.confirmOrder(orderDoc.id, orderDoc)
             .then(result => {
                 this.props.updateOrderList()
                     .then(() => {
+                        NotificationManager.success('Order Placement Successful', 'Success');
                         this.setState({
                             isConfirmLoading: false
                         })
@@ -161,9 +164,13 @@ class Order extends React.Component {
         return (
             <div>
                 <ItemList listItems={this.state.order} onUpdateQuantity={(id, value) => this.handleUpdateQuantityItem(id, value)} onDeleteItem={(item) => this.handleDeleteItem(item)} />
-                <div className="text-center">
-                    {this.state.isConfirmLoading ? (<Spinner type="grow" color="danger" />) : (<button onClick={this.confirmOrder} className="btn btn-outline-danger">Confirm Order</button>)}
-                </div>
+                {this.props.orderStatus != "served" ?
+                    (
+                        <div className="text-center">
+                            {this.state.isConfirmLoading ? (<Spinner type="grow" color="danger" />) : (<button onClick={this.confirmOrder} className="btn btn-outline-danger">Confirm Order</button>)}
+                        </div>
+                    ) : ""
+                }
             </div>
         );
     }

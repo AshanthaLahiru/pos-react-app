@@ -3,6 +3,7 @@ import { Spinner, ListGroup, ListGroupItem, ListGroupItemHeading, Alert, Collaps
 import Order from "./order"
 import OrderCreate from "./order-create"
 import { service } from "../../services/service"
+import { NotificationContainer, NotificationManager } from 'react-notifications';
 
 class OrderList extends React.Component {
     constructor(props) {
@@ -12,7 +13,7 @@ class OrderList extends React.Component {
             orderTots: {},
             orderVisibility: {},
             creatOrderModalShow: false,
-            orderList: []
+            orderList: [],
         };
 
         this.renderOrderList = this.renderOrderList.bind(this);
@@ -30,12 +31,19 @@ class OrderList extends React.Component {
         let order = this.state.orderTots;
         order[orderId] = total;
         this.setState({
-            orderTots: order
+            orderTots: order,
+        })
+    }
+
+    handleOrderLoadingStatus() {
+        this.setState({
+            isOrderLoading: false
         })
     }
 
     showOrder(orderId) {
         let order = {};
+
         this.state.orderList.forEach((item) => {
             if (orderId == item.id)
                 order[item.id] = true;
@@ -44,7 +52,8 @@ class OrderList extends React.Component {
         })
 
         this.setState({
-            orderVisibility: order
+            orderVisibility: order,
+            isOrderLoading: true
         })
     }
 
@@ -81,6 +90,7 @@ class OrderList extends React.Component {
                     orderVisibility: visbility
                 })
             })
+        NotificationManager.success('Order Creation Successful', 'Success');
     }
 
     setPropertyValues(array, orderId = null) {
@@ -108,7 +118,7 @@ class OrderList extends React.Component {
             .then((response) => {
                 if (response) {
                     this.setState({
-                        orderList: response.data
+                        orderList: response.data,
                     })
                 }
                 return;
@@ -131,7 +141,7 @@ class OrderList extends React.Component {
     }
 
     renderOrderDetails(id, status) {
-        return (<Order orderStatus={status} orderId={id} onOrderUpdate={(total) => this.handleOrderTotal(id, total)} updateOrderList={() => this.updateOrderList()} />);
+        return (<Order orderStatus={status} orderId={id} onOrderUpdate={(total) => this.handleOrderTotal(id, total)} updateOrderList={() => this.updateOrderList()} onLoadingStatusToggle={() => this.handleOrderLoadingStatus()} />);
     }
 
     // active={this.state.orderVisibility[order.id]}
@@ -142,7 +152,7 @@ class OrderList extends React.Component {
                 <div key={index}>
                     <a style={{ cursor: 'pointer' }} onClick={(event) => this.showOrder(order.id)}>
                         <ListGroupItem>
-                            <ListGroupItemHeading>{order.id} {this.checkOrderStatus(order.status)}</ListGroupItemHeading>
+                            <ListGroupItemHeading>{order.id} {(this.state.isOrderLoading && this.state.orderVisibility[order.id]) ? (<Spinner type="grow" color="danger" className="float-right" />) : this.checkOrderStatus(order.status)}</ListGroupItemHeading>
                             {(this.state.orderVisibility[order.id] && this.state.orderTots[order.id]) ? this.renderTotalOnList(this.state.orderTots[order.id]) : ""}
                         </ListGroupItem>
                     </a>
@@ -153,9 +163,18 @@ class OrderList extends React.Component {
         )
     }
 
+    renderEmptyOrderView() {
+        return (
+            <div className="alert alert-secondary text-center" role="alert">
+                <h5>Hey, There are no orders. Please create an order.!</h5>
+            </div>
+        )
+    }
+
     render() {
         return (
             <div className="container-fluid">
+                <NotificationContainer />
                 <br />
                 <nav className="navbar navbar-dark bg-dark" style={{ backgroundColor: '#3766FF', borderRadius: '5px' }}>
                     <span className="navbar-brand p-3 mb-2 h1">POS System</span>
@@ -169,7 +188,7 @@ class OrderList extends React.Component {
                 <br />
                 <div className="row col-md-6 offset-md-3">
                     <ListGroup className="btn-block">
-                        {this.renderOrderList()}
+                        {this.state.orderList.length != 0 ? this.renderOrderList() : this.renderEmptyOrderView()}
                     </ListGroup>
                 </div>
             </div>
