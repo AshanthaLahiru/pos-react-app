@@ -16,7 +16,8 @@ class Order extends React.Component {
             order: [],
             onList: [],
             isOrderShowing: false,
-            isConfirmLoading: false
+            isConfirmLoading: false,
+            orderDoc: null
         };
 
         this.showOrder = this.showOrder.bind(this);
@@ -100,6 +101,7 @@ class Order extends React.Component {
                             result[0].data.splice(index, 1);
                         }
                     })
+
                     this.setState({
                         orderDoc: result[1].data,
                         onList: result[0].data,
@@ -126,10 +128,13 @@ class Order extends React.Component {
             delete item.description;
         })
 
-        service.confirmOrder(orderDoc.id, orderDoc)
-            .catch((e) => {
-                console.log("Auto Saving Failed");
-            })
+        if (orderDoc.status != "served") {
+            service.confirmOrder(orderDoc.id,
+                orderDoc)
+                .catch((e) => {
+                    console.log("Auto Saving Failed");
+                })
+        }
     }
 
     confirmOrder() {
@@ -147,6 +152,12 @@ class Order extends React.Component {
         })
 
         orderDoc.status = "served";
+
+        let tempDoc = this.state.orderDoc;
+        tempDoc.status = "served";
+        this.setState({
+            orderDoc: tempDoc
+        })
 
         service.confirmOrder(orderDoc.id, orderDoc)
             .then(result => {

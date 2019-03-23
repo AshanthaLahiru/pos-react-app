@@ -3,7 +3,7 @@ import axios from "axios"
 
 class Service {
     constructor() {
-        this.header = {
+        let header = {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem("token")}`
             }
@@ -11,41 +11,77 @@ class Service {
     }
 
     createOrder(order) {
-        return axios.post(host + 'order/', order, this.header)
+        let header = {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`
+            }
+        }
+
+        return axios.post(host + 'order/', order, header)
             .then((response) => {
                 return response;
             })
     }
 
     getAllOrdersByUser(userEmail) {
-        return axios.get(host + `order/user/${userEmail}`, this.header)
+        let header = {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`
+            }
+        }
+
+        return axios.get(host + `order/user/${userEmail}`, header)
             .then((response) => {
                 return response;
             })
     }
 
     getAllItems() {
-        return axios.get(host + `item/`, this.header)
+        let header = {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`
+            }
+        }
+
+        return axios.get(host + `item/`, header)
             .then(response => {
                 return response;
             })
     }
 
     getItemsByOrderId(orderId) {
-        return axios.get(host + `order/${orderId}/items`, this.header)
+        let header = {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`
+            }
+        }
+
+        return axios.get(host + `order/${orderId}/items`, header)
             .then(response => {
                 return response;
             })
     }
 
     confirmOrder(orderId, order) {
-        return axios.put(host + `order/${orderId}/`, order, this.header)
+        let header = {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`
+            }
+        }
+
+        return axios.put(host + `order/${orderId}/`, order, header)
             .then(response => {
                 return response;
             })
     }
 
     authenticateUser(email, password) {
+        let header = {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`
+            }
+        }
+
         return axios.post(host + "user/login", {
             email,
             password
@@ -56,6 +92,12 @@ class Service {
     }
 
     registerUser(user) {
+        let header = {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`
+            }
+        }
+
         return axios.post(host + "user/", user)
             .then(response => {
                 return response;
