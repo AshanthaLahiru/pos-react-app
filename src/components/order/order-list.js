@@ -3,7 +3,7 @@ import { Spinner, ListGroup, ListGroupItem, ListGroupItemHeading, Alert, Collaps
 import Order from "./order"
 import OrderCreate from "./order-create"
 import { service } from "../../services/service"
-import { NotificationContainer, NotificationManager } from 'react-notifications';
+import { NotificationManager } from 'react-notifications';
 
 class OrderList extends React.Component {
     constructor(props) {
@@ -139,10 +139,10 @@ class OrderList extends React.Component {
 
     checkOrderStatus(status) {
         if (status == "served") {
-            return <span className="float-right" style={{ color: "#28a745" }}>SERVED</span>;
+            return <span className="float-right text-success">SERVED</span>;
         }
         else {
-            return <span className="float-right" style={{ color: "#ffc107" }}>PENDING</span>;
+            return <span className="float-right text-warning">PENDING</span>;
         }
     }
 
@@ -156,7 +156,7 @@ class OrderList extends React.Component {
         return (
             this.state.orderList.map((order, index) =>
                 <div key={index}>
-                    <a style={{ cursor: 'pointer' }} onClick={(event) => this.showOrder(order.id)}>
+                    <a className="mock-button" onClick={(event) => this.showOrder(order.id)}>
                         <ListGroupItem>
                             <ListGroupItemHeading>{order.id} {(this.state.isOrderLoading && this.state.orderVisibility[order.id]) ? (<Spinner type="grow" color="danger" className="float-right" />) : this.checkOrderStatus(order.status)}</ListGroupItemHeading>
                             {(this.state.orderVisibility[order.id] && this.state.orderTots[order.id]) ? this.renderTotalOnList(this.state.orderTots[order.id]) : ""}
@@ -180,9 +180,8 @@ class OrderList extends React.Component {
     render() {
         return (
             <div className="container-fluid">
-                <NotificationContainer />
                 <br />
-                <nav className="navbar navbar-dark bg-dark" style={{ backgroundColor: '#3766FF', borderRadius: '5px' }}>
+                <nav className="navbar navbar-dark bg-dark round-edge-navbar">
                     <span className="navbar-brand p-3 mb-2 h1">POS System</span>
                     <div>
                         <button onClick={() => this.handleToggleShowOrder()} className="btn btn-outline-light m-2">Create New Order</button>

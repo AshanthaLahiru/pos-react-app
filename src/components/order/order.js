@@ -180,7 +180,7 @@ class Order extends React.Component {
                         <div className="text-center">
                             {this.state.isConfirmLoading ? (<Spinner type="grow" color="danger" />) : (<button onClick={this.confirmOrder} className="btn btn-outline-danger">Confirm Order</button>)}
                         </div>
-                    ) : ""
+                    ) : ("")
                 }
             </div>
         );

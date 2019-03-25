@@ -3,6 +3,8 @@ import ReactDOM from "react-dom";
 import Login from "./login/login";
 import OrderList from "./order/order-list"
 import Register from "./register/register"
+import { NotificationContainer } from 'react-notifications';
+
 
 class App extends React.Component {
     constructor(props) {
@@ -42,15 +44,30 @@ class App extends React.Component {
     }
 
     renderLogin() {
-        return <Login onClickRegister={() => this.setState({ path: "register" })} onLoginClick={(status) => { this.handleLogin(status) }} />
+        return (
+            <div>
+                <NotificationContainer />
+                <Login onClickRegister={() => this.setState({ path: "register" })} onLoginClick={(status) => { this.handleLogin(status) }} />
+            </div>
+        )
     }
 
     renderRegister() {
-        return <Register onClickLogin={() => this.setState({ path: "login" })} />
+        return (
+            <div>
+                <NotificationContainer />
+                <Register onClickLogin={(path) => this.setState({ path: "login" })} />
+            </div>
+        )
     }
 
     renderHome() {
-        return <OrderList onClickLogout={(status) => { this.handleLogout(status) }} />
+        return (
+            <div>
+                <NotificationContainer />
+                <OrderList onClickLogout={(status) => { this.handleLogout(status) }} />
+            </div>
+        )
     }
 }
 

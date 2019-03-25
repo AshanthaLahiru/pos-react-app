@@ -1,6 +1,7 @@
 import React from "react";
 import { Col, FormGroup, Label, Input, Spinner } from 'reactstrap';
 import { service } from "../../services/service";
+import { NotificationManager } from 'react-notifications';
 
 class Register extends React.Component {
     constructor(props) {
@@ -38,15 +39,15 @@ class Register extends React.Component {
                 this.setState({
                     isLoading: false
                 })
+                NotificationManager.success('Registration is completed successfully. Please Sign In', 'Success');
+                this.props.onClickLogin();
             })
             .catch(e => {
                 this.setState({
                     isLoading: false
                 })
-                // this.props.onLoginClick(401);
+                NotificationManager.error('Registration failed. Please contact the service provider', 'Invalid Registration');
             })
-
-
     }
 
     render() {
@@ -74,7 +75,7 @@ class Register extends React.Component {
                                     {this.state.isLoading ? (<Spinner type="grow" color="success" />) : (<button onClick={this.handleSubmit} className="btn btn-success btn-block" name="Login">Sign Up</button>)}
                                 </div>
                                 <br />
-                                <a style={{ cursor: 'pointer' }} onClick={() => this.props.onClickLogin()}>Back to Login</a>
+                                <a className="mock-button" onClick={() => this.props.onClickLogin()}>Back to Login</a>
                             </div>
                         </div>
                     </Col>

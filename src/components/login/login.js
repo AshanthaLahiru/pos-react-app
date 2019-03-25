@@ -1,6 +1,8 @@
 import React from "react";
-import { Jumbotron, Button, Container, Col, FormGroup, Label, Input, Spinner } from 'reactstrap';
+import { Col, FormGroup, Input, Spinner } from 'reactstrap';
 import { service } from "../../services/service";
+import { NotificationManager } from 'react-notifications';
+
 
 class Login extends React.Component {
   constructor(props) {
@@ -34,6 +36,7 @@ class Login extends React.Component {
           isLoading: false
         })
         this.props.onLoginClick(200);
+        NotificationManager.success('Welcome', '');
       })
       .catch(e => {
         console.log(e)
@@ -41,6 +44,7 @@ class Login extends React.Component {
           isLoading: false
         })
         this.props.onLoginClick(401);
+        NotificationManager.error('Authentication Failed', 'Invalid Credentials');
       })
 
   }
@@ -66,7 +70,7 @@ class Login extends React.Component {
                 <div className="text-center">
                   {this.state.isLoading ? (<Spinner type="grow" color="success" />) : (<button onClick={this.handleSubmit} className="btn btn-success btn-block" name="Login">Sign In</button>)}
                   <br />
-                  <a style={{ cursor: 'pointer' }} onClick={() => this.props.onClickRegister()}>New User?</a>
+                  <a className="mock-button" onClick={() => this.props.onClickRegister()}>New User?</a>
                 </div>
               </div>
             </div>
