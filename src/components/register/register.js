@@ -10,6 +10,7 @@ class Register extends React.Component {
             user_name: "",
             user_email: "",
             user_password: "",
+            confirm_user_password: "",
             isLoading: false
         };
 
@@ -24,30 +25,36 @@ class Register extends React.Component {
     }
 
     handleSubmit(event) {
-        this.setState({
-            isLoading: true
-        })
 
-        let user = {
-            name: this.state.user_name,
-            email: this.state.user_email,
-            password: this.state.user_password
+        if (this.state.user_password == this.state.confirm_user_password) {
+            this.setState({
+                isLoading: true
+            })
+
+            let user = {
+                name: this.state.user_name,
+                email: this.state.user_email,
+                password: this.state.user_password
+            }
+
+
+            service.registerUser(user)
+                .then((response) => {
+                    this.setState({
+                        isLoading: false
+                    })
+                    NotificationManager.success('Registration is completed successfully. Please Sign In', 'Success');
+                    this.props.onClickLogin();
+                })
+                .catch(e => {
+                    this.setState({
+                        isLoading: false
+                    })
+                    NotificationManager.error('Registration failed. Please contact the service provider', 'Invalid Registration');
+                })
+        } else {
+            NotificationManager.error('Password doesn\'t match', 'Invalid Registration');
         }
-
-        service.registerUser(user)
-            .then((response) => {
-                this.setState({
-                    isLoading: false
-                })
-                NotificationManager.success('Registration is completed successfully. Please Sign In', 'Success');
-                this.props.onClickLogin();
-            })
-            .catch(e => {
-                this.setState({
-                    isLoading: false
-                })
-                NotificationManager.error('Registration failed. Please contact the service provider', 'Invalid Registration');
-            })
     }
 
     render() {
@@ -58,7 +65,7 @@ class Register extends React.Component {
                     <Col sm="12" md={{ size: 4, offset: 4 }}>
                         <div className="card border-info text-center">
                             <div className="card-header">
-                                Sign Up
+                                <h4> Sign Up</h4>
                             </div>
                             <div className="card-body">
                                 <FormGroup>
@@ -69,6 +76,9 @@ class Register extends React.Component {
                                 </FormGroup>
                                 <FormGroup>
                                     <Input type="password" name="user_password" id="user_password" placeholder="Password" onChange={this.handleChange} required={true} />
+                                </FormGroup>
+                                <FormGroup>
+                                    <Input type="password" name="confirm_user_password" id="confirm_user_password" placeholder="Confirm Password" onChange={this.handleChange} required={true} />
                                 </FormGroup>
                                 <br />
                                 <div className="text-center">

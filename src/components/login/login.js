@@ -57,7 +57,7 @@ class Login extends React.Component {
           <Col sm="12" md={{ size: 4, offset: 4 }}>
             <div className="card border-info text-center">
               <div className="card-header">
-                Sign In
+                <h5>Sign In</h5>
               </div>
               <div className="card-body">
                 <FormGroup>

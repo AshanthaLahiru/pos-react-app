@@ -47,8 +47,7 @@ class OrderList extends React.Component {
 
         this.state.orderList.forEach((item) => {
             if (orderId == item.id) {
-                if (order[item.id]) {
-                    console.log(">>>>")
+                if (this.state.orderVisibility[item.id]) {
                     tempLoading = false;
                 }
                 order[item.id] = true;
