@@ -24,6 +24,7 @@ class Order extends React.Component {
         this.handleUpdateQuantityItem = this.handleUpdateQuantityItem.bind(this);
         this.handleDeleteItem = this.handleDeleteItem.bind(this);
         this.confirmOrder = this.confirmOrder.bind(this);
+        this.handleAdd = this.handleAdd.bind(this);
     }
 
     handleAdd(itemIndex) {
@@ -174,7 +175,7 @@ class Order extends React.Component {
     renderItemList() {
         return (
             <div>
-                <ItemList listItems={this.state.order} onUpdateQuantity={(id, value) => this.handleUpdateQuantityItem(id, value)} onDeleteItem={(item) => this.handleDeleteItem(item)} />
+                <ItemList listItems={this.state.order} onUpdateQuantity={this.handleUpdateQuantityItem} onDeleteItem={this.handleDeleteItem} />
                 {this.props.orderStatus != "served" ?
                     (
                         <div className="text-center">
@@ -191,7 +192,7 @@ class Order extends React.Component {
             <Collapse isOpen={this.state.isOrderShowing}>
                 <Card className={this.props.orderStatus == "served" ? "disable-element" : ""}>
                     <CardBody>
-                        <SelectItem listItems={this.state.onList} onAdd={(item) => this.handleAdd(item)} />
+                        <SelectItem listItems={this.state.onList} onAdd={this.handleAdd} />
                         <br />
                         {this.state.order.length != 0 ? this.renderItemList() : ("")}
                     </CardBody>

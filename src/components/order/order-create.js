@@ -39,7 +39,7 @@ class OrderCreate extends React.Component {
                     </ModalBody>
                     <ModalFooter>
                         <Button color="primary" onClick={() => this.props.onCreateOrder(this.state.orderName || this.props.orderName)}>Create</Button>
-                        <Button color="secondary" onClick={() => this.props.onClickCreateShow()}>Cancel</Button>
+                        <Button color="secondary" onClick={this.props.onClickCreateShow}>Cancel</Button>
                     </ModalFooter>
                 </Modal>
             </div>

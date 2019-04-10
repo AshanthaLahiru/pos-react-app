@@ -4,6 +4,7 @@ import Order from "./order"
 import OrderCreate from "./order-create"
 import { service } from "../../services/service"
 import { NotificationManager } from 'react-notifications';
+import TopBar from '../utill/top-bar'
 
 class OrderList extends React.Component {
     constructor(props) {
@@ -21,6 +22,8 @@ class OrderList extends React.Component {
         this.handleOrderTotal = this.handleOrderTotal.bind(this);
         this.handleToggleShowOrder = this.handleToggleShowOrder.bind(this);
         this.handleCreateOrder = this.handleCreateOrder.bind(this);
+        this.handleOrderLoadingStatus = this.handleOrderLoadingStatus.bind(this);
+        this.updateOrderList = this.updateOrderList.bind(this);
     }
 
     componentDidMount() {
@@ -146,7 +149,7 @@ class OrderList extends React.Component {
     }
 
     renderOrderDetails(id, status) {
-        return (<Order orderStatus={status} orderId={id} onOrderUpdate={(total) => this.handleOrderTotal(id, total)} updateOrderList={() => this.updateOrderList()} onLoadingStatusToggle={() => this.handleOrderLoadingStatus()} />);
+        return (<Order orderStatus={status} orderId={id} onOrderUpdate={(total) => this.handleOrderTotal(id, total)} updateOrderList={this.updateOrderList} onLoadingStatusToggle={this.handleOrderLoadingStatus} />);
     }
 
     // active={this.state.orderVisibility[order.id]}
@@ -155,7 +158,7 @@ class OrderList extends React.Component {
         return (
             this.state.orderList.map((order, index) =>
                 <div key={index}>
-                    <a className="mock-button" onClick={(event) => this.showOrder(order.id)}>
+                    <a className="mock-button" onClick={() => this.showOrder(order.id)}>
                         <ListGroupItem>
                             <ListGroupItemHeading>{order.id} {(this.state.isOrderLoading && this.state.orderVisibility[order.id]) ? (<Spinner type="grow" color="danger" className="float-right" />) : this.checkOrderStatus(order.status)}</ListGroupItemHeading>
                             {(this.state.orderVisibility[order.id] && this.state.orderTots[order.id]) ? this.renderTotalOnList(this.state.orderTots[order.id]) : ""}
@@ -179,15 +182,7 @@ class OrderList extends React.Component {
     render() {
         return (
             <div className="container-fluid">
-                <br />
-                <nav className="navbar navbar-dark bg-dark round-edge-navbar">
-                    <span className="navbar-brand p-3 mb-2 h1">POS System</span>
-                    <div>
-                        <button onClick={() => this.handleToggleShowOrder()} className="btn btn-outline-light m-2">Create New Order</button>
-                        <button onClick={() => this.props.onClickLogout()} className="btn btn-outline-light">Logout</button>
-                    </div>
-                </nav>
-
+                <TopBar onToggleShowOrder={() => this.handleToggleShowOrder()} onClickLogout={() => this.props.onClickLogout()} />
                 <OrderCreate visibility={this.state.creatOrderModalShow} onClickCreateShow={() => this.handleToggleShowOrder()} orderName={"Order-" + Date.now()} onCreateOrder={(orderName) => this.handleCreateOrder(orderName)} />
                 <br />
                 <div className="row col-md-6 offset-md-3">

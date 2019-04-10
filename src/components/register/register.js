@@ -1,7 +1,8 @@
 import React from "react";
-import { Col, FormGroup, Label, Input, Spinner } from 'reactstrap';
+import { Spinner } from 'reactstrap';
 import { service } from "../../services/service";
 import { NotificationManager } from 'react-notifications';
+import TopBar from "../utill/top-bar";
 
 class Register extends React.Component {
     constructor(props) {
@@ -62,38 +63,38 @@ class Register extends React.Component {
 
     render() {
         return (
-
-            <div className="row h-100 backgroundImage">
-                <div className="col-sm-12 my-auto">
-                    <Col sm="12" md={{ size: 4, offset: 4 }}>
-                        <div className="card border-info text-center transparent">
+            <div className="container-fluid">
+                <TopBar />
+                <div className="row h-75">
+                    <div className="col-sm-12 col-md-6 offset-md-3 my-auto">
+                        <div className="card border-info text-center">
                             <div className="card-header">
                                 <h4> Sign Up</h4>
                             </div>
                             <div className="card-body">
-                                <FormGroup>
-                                    <Input type="text" name="user_name" id="user_name" placeholder="Name" onChange={this.handleChange} required={true} />
-                                </FormGroup>
-                                <FormGroup>
-                                    <Input type="email" name="user_email" id="user_email" placeholder="Email" onChange={this.handleChange} required={true} />
-                                </FormGroup>
-                                <FormGroup>
-                                    <Input type="password" name="user_password" id="user_password" placeholder="Password" onChange={this.handleChange} required={true} />
-                                </FormGroup>
-                                <FormGroup>
-                                    <Input type="password" name="confirm_user_password" id="confirm_user_password" placeholder="Confirm Password" onChange={this.handleChange} required={true} />
-                                </FormGroup>
+                                <div className="form-group">
+                                    <input className="form-control" type="text" name="user_name" id="user_name" placeholder="Name" onChange={this.handleChange} required={true} />
+                                </div>
+                                <div className="form-group">
+                                    <input className="form-control" type="email" name="user_email" id="user_email" placeholder="Email" onChange={this.handleChange} required={true} />
+                                </div>
+                                <div className="form-group">
+                                    <input className="form-control" type="password" name="user_password" id="user_password" placeholder="Password" onChange={this.handleChange} required={true} />
+                                </div>
+                                <div className="form-group">
+                                    <input className="form-control" type="password" name="confirm_user_password" id="confirm_user_password" placeholder="Confirm Password" onChange={this.handleChange} required={true} />
+                                </div>
                                 <br />
                                 <div className="text-center">
                                     {this.state.isLoading ? (<Spinner type="grow" color="success" />) : (<button onClick={this.handleSubmit} className="btn btn-success btn-block" name="Login">Sign Up</button>)}
                                 </div>
                                 <br />
-                                <a className="mock-button" onClick={() => this.props.onClickLogin()}>Back to Login</a>
+                                <a className="mock-button" onClick={this.props.onClickLogin}>Back to Login</a>
                             </div>
                         </div>
-                    </Col>
-                </div>
-            </div >
+                    </div>
+                </div >
+            </div>
         );
     }
 }

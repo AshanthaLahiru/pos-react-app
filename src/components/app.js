@@ -11,6 +11,7 @@ class App extends React.Component {
         super(props);
 
         this.handleLogin = this.handleLogin.bind(this);
+        this.handleLogout = this.handleLogout.bind(this);
 
         this.state = {
             path: "login"
@@ -47,7 +48,7 @@ class App extends React.Component {
         return (
             <div>
                 <NotificationContainer />
-                <Login onClickRegister={() => this.setState({ path: "register" })} onLoginClick={(status) => { this.handleLogin(status) }} />
+                <Login onClickRegister={() => this.setState({ path: "register" })} onClickLogin={this.handleLogin} />
             </div>
         )
     }
@@ -65,7 +66,7 @@ class App extends React.Component {
         return (
             <div>
                 <NotificationContainer />
-                <OrderList onClickLogout={(status) => { this.handleLogout(status) }} />
+                <OrderList onClickLogout={this.handleLogout} />
             </div>
         )
     }
