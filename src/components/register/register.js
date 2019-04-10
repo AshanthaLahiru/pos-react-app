@@ -26,7 +26,10 @@ class Register extends React.Component {
 
     handleSubmit(event) {
 
-        if (this.state.user_password == this.state.confirm_user_password) {
+        if (this.state.user_name == "" && this.state.user_email == "" && this.state.user_password == "") {
+            NotificationManager.error('Please fill all the fields');
+        }
+        else if (this.state.user_password == this.state.confirm_user_password) {
             this.setState({
                 isLoading: true
             })
@@ -60,10 +63,10 @@ class Register extends React.Component {
     render() {
         return (
 
-            <div className="row h-100">
+            <div className="row h-100 backgroundImage">
                 <div className="col-sm-12 my-auto">
                     <Col sm="12" md={{ size: 4, offset: 4 }}>
-                        <div className="card border-info text-center">
+                        <div className="card border-info text-center transparent">
                             <div className="card-header">
                                 <h4> Sign Up</h4>
                             </div>

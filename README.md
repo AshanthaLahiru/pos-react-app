@@ -19,7 +19,13 @@
 ![final2](https://user-images.githubusercontent.com/22785263/54862652-eb856600-4d63-11e9-89c0-a8d2f45f2d03.gif)
 
 <hr/>
+
 ## Run
 `npm install`
 <br/>
 `npm start`
+
+
+## Demo Credentials
+User Email: `lahiru@gmail.com`
+Password: `lahiru`
