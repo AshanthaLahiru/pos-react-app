@@ -1,5 +1,5 @@
 import React from "react";
-import { Fade } from "reactstrap"
+import Item from "./item"
 
 class ItemList extends React.Component {
     constructor(props) {
@@ -10,15 +10,10 @@ class ItemList extends React.Component {
 
     renderOrder() {
         return this.props.listItems
-            .map((item, index) =>
-                <tr key={index}>
-                    <th scope="row">{index + 1}</th>
-                    <td>{item.name}</td>
-                    <td className=" text-center"><input onChange={(event) => this.props.onUpdateQuantity(item.id, event.target.value)} type="number" min="1" max="500" value={item.quantity} /></td>
-                    <td className=" text-center">$ {item.price}</td>
-                    <td className=" text-center"><button onClick={() => this.props.onDeleteItem(item.id)} className="btn btn-sm btn-outline-danger">Delete</button></td>
-                </tr>
-            )
+            .map((item, index) => {
+                item['index'] = index;
+                return (<Item key={index} item={item} onUpdateQuantity={this.props.onUpdateQuantity} onDeleteItem={this.props.onDeleteItem} />);
+            })
     }
 
 
