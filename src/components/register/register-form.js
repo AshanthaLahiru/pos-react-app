@@ -64,7 +64,7 @@ class RegisterForm extends React.Component {
     render() {
         return (
             <div className="row h-75">
-                <div className="col-sm-12 col-md-6 offset-md-3 my-auto">
+                <div className="col-sm-12 col-md-4 offset-md-4 my-auto">
                     <div className="card border-info text-center">
                         <div className="card-header">
                             <h4> Sign Up</h4>
