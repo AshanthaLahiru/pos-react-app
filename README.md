@@ -1,6 +1,9 @@
 # POS React UI
 
-[React UI :  https://pos-react-ui.herokuapp.com :desktop_computer:  ](https://pos-react-ui.herokuapp.com/)
+[React UI [Host - AWS]:  http://ec2-54-91-244-99.compute-1.amazonaws.com:8080 :desktop_computer:  ](http://ec2-54-91-244-99.compute-1.amazonaws.com:8080/)
+<br/>
+[React UI [Host - Heroku]:  https://pos-react-ui.herokuapp.com :desktop_computer:  ](https://pos-react-ui.herokuapp.com/)
+<br/>
 [GitHub :file_folder: ](https://github.com/AshanthaLahiru/pos-react-app)
 
 ## POS Swagger UI
@@ -21,6 +24,7 @@
 <hr/>
 
 ## Run
+
 `npm install`
 <br/>
 `npm start`
